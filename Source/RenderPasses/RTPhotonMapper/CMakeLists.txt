@@ -11,6 +11,6 @@ target_sources(RTPhotonMapper PRIVATE
 	showPhotonAccelerationStructure.rt.slang
 )
 
-target_copy_shaders(PathTracer RenderPasses/RTPhotonMapper)
+target_copy_shaders(RTPhotonMapper RenderPasses/RTPhotonMapper)
 
 target_source_group(RTPhotonMapper "RenderPasses")

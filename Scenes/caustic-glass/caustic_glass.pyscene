@@ -1,0 +1,50 @@
+# Create materials
+
+floor = Material('Floor')
+floor.baseColor = float4(0.64, 0.64, 0.64, 1.0)
+floor.roughness = 0.95
+
+glass = Material('Glass')
+glass.roughness = 0
+glass.metallic = 0
+glass.indexOfRefraction = 1.25
+glass.specularTransmission = 1
+glass.doubleSided = True
+
+
+# Create geometry
+
+glassMesh = TriangleMesh.createFromFile('geometry/mesh_00001.ply')
+floorMesh = TriangleMesh.createFromFile('geometry/mesh_00002.ply')
+
+# Create mesh instances
+
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('Floor'),
+    sceneBuilder.addTriangleMesh(floorMesh, floor)
+)
+
+sceneBuilder.addMeshInstance(
+    sceneBuilder.addNode('Glass'),
+    sceneBuilder.addTriangleMesh(glassMesh, glass)
+)
+
+# Create light
+
+spot = PointLight('Spotlight')
+spot.intensity = float3(139.81,118.63,105.38)
+spot.position = float3(0, 5, 9)
+spot.direction = float3(-0.4744, -0.2135, -0.8540)
+spot.openingAngle = 0.588
+spot.penumbraAngle = 0.05
+sceneBuilder.addLight(spot)
+
+
+# Create camera
+
+camera = Camera()
+camera.position = float3(-5.5, 7, -5.5)
+camera.target = float3(-4.75, 2.25, 0)
+camera.up = float3(0, 1, 0)
+camera.focalLength = 30.0
+sceneBuilder.addCamera(camera)

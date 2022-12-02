@@ -1,0 +1,8 @@
+﻿Scene,Number Photons,Global Radius,Caustic Radius,Culling,Stochastic Collect
+Bistro_WineGlass,2 mil,0.07,0.012,On,On
+Veach-BiDir,1 mil,0.09,0.03,On,On
+Caustic Water,1 mil,0.02,0.005,Off,Off
+Caustic Glass,1 mil,0.035,0.01,Off,Off
+Caustic Glass(Teaser),2 mil,0.07,0.01,Off,Off
+Living Room,2 mil,0.034,0.007,On,On
+Bistro_Full,4 mil,0.14,0.03,On,On

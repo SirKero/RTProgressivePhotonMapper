@@ -1,0 +1,6 @@
+# Load scene
+sceneBuilder.importScene("scene-v4.pbrt")
+
+#Make lamp a little more rough
+lamp = sceneBuilder.getMaterial("Lamp")
+lamp.roughness = 0.51

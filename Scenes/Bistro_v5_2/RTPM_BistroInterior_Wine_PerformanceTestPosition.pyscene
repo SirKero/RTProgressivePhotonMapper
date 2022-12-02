@@ -1,0 +1,92 @@
+# Create camera
+
+camera = Camera()
+camera.animated = False
+camera.position = float3(11.85,2.95,4.66)
+camera.target = float3(11.67,2.89,3.68)
+camera.up = float3(0, 1, 0)
+camera.focalLength = 35
+sceneBuilder.addCamera(camera)
+
+# Load scene
+sceneBuilder.importScene("BistroInterior_Wine.fbx")
+
+# Adjust emissives to get well exposed image
+for m in sceneBuilder.materials:
+    m.emissiveFactor *= 1000
+
+
+## Absorption coefficients (or extinction coefficient in absence of scattering)
+# Taken from https://cseweb.ucsd.edu/~ravir/dilution.pdf and rescaled for Falcor scene units (meters)
+volume_absorption = {
+    'white_wine': float3(12.28758, 16.51818, 20.30273),
+    'red_wine': float3(117.13133, 251.91133, 294.33867),
+    'beer': float3(11.78552, 25.45862, 58.37241),
+    'bottle_wine': float3(102.68063, 168.015, 246.80438)
+}
+
+glass = sceneBuilder.getMaterial("TransparentGlass")
+glass.roughness = 0
+glass.metallic = 0
+glass.indexOfRefraction = 1.55
+glass.specularTransmission = 1
+glass.doubleSided = True
+glass.nestedPriority = 5
+
+bottle_wine = sceneBuilder.getMaterial("TransparentGlassWine")
+bottle_wine.roughness = 0
+bottle_wine.metallic = 0
+bottle_wine.indexOfRefraction = 1.55
+bottle_wine.specularTransmission = 1
+bottle_wine.doubleSided = True
+bottle_wine.nestedPriority = 5
+bottle_wine.volumeAbsorption = volume_absorption['bottle_wine']
+
+water = sceneBuilder.getMaterial("Water")
+water.roughness = 0
+water.metallic = 0
+water.indexOfRefraction = 1.33
+water.specularTransmission = 1
+water.doubleSided = True
+water.nestedPriority = 1
+
+ice = sceneBuilder.getMaterial("Ice")
+ice.roughness = 0.1
+ice.metallic = 0
+ice.indexOfRefraction = 1.31
+ice.specularTransmission = 1
+ice.doubleSided = True
+ice.nestedPriority = 4
+
+white_wine = sceneBuilder.getMaterial("White_Wine")
+white_wine.roughness = 0
+white_wine.metallic = 0
+white_wine.indexOfRefraction = 1.33
+white_wine.specularTransmission = 1
+white_wine.doubleSided = True
+white_wine.nestedPriority = 1
+white_wine.volumeAbsorption = volume_absorption['white_wine']
+
+red_wine = sceneBuilder.getMaterial("Red_Wine")
+red_wine.roughness = 0
+red_wine.metallic = 0
+red_wine.indexOfRefraction = 1.33
+red_wine.specularTransmission = 1
+red_wine.doubleSided = True
+red_wine.nestedPriority = 1
+red_wine.volumeAbsorption = volume_absorption['red_wine']
+
+beer = sceneBuilder.getMaterial("Beer")
+beer.roughness = 0
+beer.metallic = 0
+beer.indexOfRefraction = 1.33
+beer.specularTransmission = 1
+beer.doubleSided = True
+beer.nestedPriority = 1
+beer.volumeAbsorption = volume_absorption['beer']
+
+cookies = sceneBuilder.getMaterial("CookieJar_Cookies")
+cookies.nestedPriority = 10
+
+toffees = sceneBuilder.getMaterial("ToffeeJar_Toffee")
+toffees.nestedPriority = 10

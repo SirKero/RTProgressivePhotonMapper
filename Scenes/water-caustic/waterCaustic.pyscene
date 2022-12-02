@@ -1,0 +1,12 @@
+# Load scene
+sceneBuilder.importScene("scene-v4.pbrt")
+
+
+# Create light
+
+spot = PointLight('Spotlight')
+spot.intensity = float3(8.0)
+spot.position = float3(0, 1.995, 0)
+spot.direction = float3(0, -1.0, 0)
+spot.openingAngle = 1.5707
+sceneBuilder.addLight(spot)

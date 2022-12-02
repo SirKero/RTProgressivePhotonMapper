@@ -1,0 +1,36 @@
+# Load scene
+sceneBuilder.importScene("livingRoom.pbrt")
+
+#Get the material for the Glass Bowl (where the glass spheres rest on)
+whiteGlass = sceneBuilder.getMaterial("WhiteGlass")
+whiteGlass.roughness = 0
+whiteGlass.metallic = 0
+whiteGlass.indexOfRefraction = 1.55
+whiteGlass.transmissionColor = float3(0.9,0.9,0.9)
+whiteGlass.specularTransmission = 0.8
+whiteGlass.doubleSided = True
+whiteGlass.nestedPriority = 5
+
+#Red glass material
+redGlass = sceneBuilder.getMaterial("RedGlass")
+redGlass.roughness = 0
+redGlass.metallic = 0
+redGlass.indexOfRefraction = 1.55
+redGlass.transmissionColor = float3(1,0.14,0.2)
+redGlass.specularTransmission = 0.8
+redGlass.doubleSided = True
+redGlass.nestedPriority = 5
+
+#Glass Material (a brighter red)
+glass = sceneBuilder.getMaterial("Glass")
+glass.roughness = 0
+glass.metallic = 0
+glass.indexOfRefraction = 1.55
+glass.transmissionColor = float3(1,0.40,0.4)
+glass.specularTransmission = 1.0
+glass.doubleSided = True
+glass.nestedPriority = 5
+
+#Increase roughness for the tables in the middle and the small tables on the side
+tables = sceneBuilder.getMaterial("WhitePaint")
+tables.roughness = 0.45
