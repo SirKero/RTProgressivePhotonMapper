@@ -37,6 +37,10 @@ Alternatively, you can use [CMake](https://cmake.org) and use the *CMake Presets
 		- The Amazon Lumberyard Bistro scene needs to be downloaded separately ([here](https://developer.nvidia.com/orca/amazon-lumberyard-bistro)). Our test scenes are marked with an `RTPM` prefix. To use the Bistro_Full scene, see `Scenes\BISTRO_FULL_README.txt` for instructions.
 	- All Falcor-supported scenes with emissive lights and analytic spot/point lights are supported. 
 
+## Examples
+- Example renders can be found under the `ExampleImages` folder.
+- A demo video showing the photon mapper and some functions can be found under: [https://youtu.be/k_JvwOJJYRo](https://youtu.be/k_JvwOJJYRo)
+
 ## Render Passes
 | Graph | Description |
 |---|---|
