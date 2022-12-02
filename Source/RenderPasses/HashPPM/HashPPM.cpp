@@ -54,8 +54,8 @@ extern "C" FALCOR_API_EXPORT void getPasses(Falcor::RenderPassLibrary & lib)
 
 namespace
 {
-    const char kShaderGeneratePhoton[] = "RenderPasses/PhotonMapperHash/PhotonMapperHashGenerate.rt.slang";
-    const char kShaderCollectPhoton[] = "RenderPasses/PhotonMapperHash/PhotonMapperHashCollect.cs.slang";
+    const char kShaderGeneratePhoton[] = "RenderPasses/HashPPM/PhotonMapperHashGenerate.rt.slang";
+    const char kShaderCollectPhoton[] = "RenderPasses/HashPPM/PhotonMapperHashCollect.cs.slang";
 
     // Ray tracing settings that affect the traversal stack size.
    // These should be set as small as possible.
