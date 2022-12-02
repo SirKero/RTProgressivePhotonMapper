@@ -251,4 +251,4 @@ AttributeBegin
 AttributeEnd
 Material "diffuse"
     "rgb reflectance" [ 0.42 0.007 0.01 ]
-Include "models/.pbrt"
+#Include "models/.pbrt"
