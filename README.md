@@ -21,15 +21,17 @@ The setup is identical to Falcor 5.2. For the sake of simplicity, we only descri
 ### Visual Studio
 You can set up a native Visual Studio solution by running `setup_vs2019.bat` (or `setup_vs2022.bat`, same process) after **cloning** this repository. The solution files are written to `build/windows-vs2019-d3d12` and the binary output is located in `build/windows-vs2019-d3d12/bin`.
 
-Alternatively, you can use [CMake](https://cmake.org) and use the *CMake Presets* `windows-vs2019-d3d12` or `windows-vs2022-d3d12` with the command `cmake --preset <preset name>`. You can find more information for generating the build files using *CMake* under the `Building Falcor/Configure Presets` section [here](./FALCOR_README.md#Configure%20Presets).
+Alternatively, you can use [CMake](https://cmake.org). Run the `setup.bat` and then use the *CMake Presets* `windows-vs2019-d3d12` or `windows-vs2022-d3d12` with the command `cmake --preset <preset name>`. You can find more information for generating the build files using *CMake* under the `Building Falcor/Configure Presets` section [here](./FALCOR_README.md#Configure%20Presets).
 
+Build in Visual Studio with `Build -> Build Solution` for the correct build order. Otherwise, multiple builds may be necessary.
 
 ## Loading in Falcor Scrips and Scenes
-- Start the renderer Mogwai
+- Start the renderer Mogwai:
 	- When using precompiled:
-		- Start `Mogwai.exe` in the folder.
+		- Run `RunMogwai.bat` or `FalcorData/Mogwai.exe`. The former already loads in the RTPhotonMapper script. 
 	- For Visual Studio:
-		- Set `Mogwai` as Startup Project (should be selected by default) and start in `Release` or `Debug` configuration.
+		- Build Solution with `Build -> Build Solution` in `Release` or `Debug` configuration.
+		- Set `Mogwai` as Startup Project (should be selected by default) and start.
 - Load a Photon Map setup in Mogwai under `File -> Load Script`. You can find the Photon Map scrips in the `PhotonMapPasses` folder.
 - Load a scene in Mogwai under `File -> Load Scene`. 
 	- Most scenes from the paper can be found in the `Scenes` folder. Load in a `.pyscene` file to get the same results as in the paper.
