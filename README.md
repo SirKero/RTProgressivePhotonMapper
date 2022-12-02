@@ -1,4 +1,4 @@
-![](Docs/images/photonMapperTeaser.png)
+![](docs/images/photonMapperTeaser.png)
 
 # Hardware Ray Tracing based Progressive Photon Mapper (using Falcor 5.2)
 
