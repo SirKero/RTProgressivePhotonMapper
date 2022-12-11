@@ -9,6 +9,9 @@ A Progressive Photon Mapper that uses the ray tracing hardware for distribution 
 - A GPU which supports DirectX Raytracing, such as the NVIDIA Titan V or GeForce RTX
 - NVIDIA driver 466.11 or newer
 
+Additionally needed for the precompiled version:
+- [Microsoft Visual C++ Redistributable x64](https://aka.ms/vs/17/release/vc_redist.x64.exe) ( Most windows programs need these, so they are probably already installed. If the applications do not start, try installing these.)
+
 Additionally needed for building the code:
 - Visual Studio 2019 or 2022
 - [Windows 10 SDK (10.0.19041.0) for Windows 10, version 2004](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/)
