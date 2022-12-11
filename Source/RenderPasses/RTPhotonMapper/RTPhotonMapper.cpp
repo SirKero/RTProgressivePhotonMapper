@@ -96,6 +96,11 @@ namespace
         {RTPhotonMapper::LightTexMode::power , "Power"},
         {RTPhotonMapper::LightTexMode::area , "Area"}
     };
+
+    const Gui::DropdownList kCausticMapModes{
+        {0, "LS+D"},
+        {1, "L(S|D)*SD"}
+    };
 }
 
 RTPhotonMapper::SharedPtr RTPhotonMapper::create(RenderContext* pRenderContext, const Dictionary& dict)
@@ -352,6 +357,8 @@ void RTPhotonMapper::renderUI(Gui::Widgets& widget)
     widget.tooltip("Maximum path length for Photon Bounces");
     dirty |= widget.checkbox("Use Photon Face Normal Rejection", mUseFaceNormalToReject);
     widget.tooltip("Uses encoded Face Normal to reject photon hits on different surfaces (corners / other side of wall). Is around 2% slower");
+    dirty |= widget.dropdown("Caustic Map Definition", kCausticMapModes, mCausticMapMultipleDiffuseHits);
+    widget.tooltip("Changes definition of the caustic photons map. L(S|D)SD path will store way more stray caustic photons, but allows caustics from indirect illuminated surfaces");
 
     widget.dummy("", dummySpacing);
 
@@ -707,6 +714,7 @@ void RTPhotonMapper::generatePhotons(RenderContext* pRenderContext, const Render
     mTracerGenerate.pProgram->addDefine("RAY_TMAX_CULLING", std::to_string(kCollectTMax));
     mTracerGenerate.pProgram->addDefine("CULLING_USE_PROJECTION", std::to_string(mUseProjectionMatrixCulling));
     mTracerGenerate.pProgram->addDefine("PHOTON_FACE_NORMAL", mUseFaceNormalToReject ? "1" : "0");
+    mTracerGenerate.pProgram->addDefine("MULTI_DIFFHIT_CAUSTIC_MAP", mCausticMapMultipleDiffuseHits == 0 ? "0" : "1");
 
     if (!mTracerGenerate.pVars) prepareVars();
     FALCOR_ASSERT(mTracerGenerate.pVars);

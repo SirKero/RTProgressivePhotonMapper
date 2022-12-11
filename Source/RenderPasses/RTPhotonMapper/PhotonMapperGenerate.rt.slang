@@ -75,6 +75,7 @@ static const uint kMaxPhotonIndexCAU = MAX_PHOTON_INDEX_CAUSTIC;
 static const uint kInfoTexHeight = INFO_TEXTURE_HEIGHT;
 static const bool kUseProjMatrixCulling = CULLING_USE_PROJECTION;
 static const bool kUsePhotonFaceNormal = PHOTON_FACE_NORMAL;
+static const bool kUseMultiDiffuseHitCausticMap = MULTI_DIFFHIT_CAUSTIC_MAP;
 
 static const float kRayTMinCulling = RAY_TMIN_CULLING;
 static const float kRayTMaxCulling = RAY_TMAX_CULLING;
@@ -376,7 +377,7 @@ void rayGen()
         bool photonCulled = gEnablePhotonCulling;
 
               
-        //save photon        
+        //store photon        
         if (reflectedDiffuse && (roulette || wasReflectedSpecular))
         {
             //Photon culling
@@ -424,7 +425,17 @@ void rayGen()
             rayData.thp /= (1.f - prob);
         }
 
-        wasReflectedSpecular = !reflectedDiffuse;
+        //Definition for the caustic map. If MultiDiffHit is active all L(S|D)*SD paths are stored in the caustic map. Else only LS+D paths are stored
+        if(kUseMultiDiffuseHitCausticMap)
+            wasReflectedSpecular = !reflectedDiffuse;
+        else{
+            //Are we on a LS+D Path ?
+            if(i == 0)
+                wasReflectedSpecular = !reflectedDiffuse;
+
+            //Set to false on the first diffuse reflection
+            wasReflectedSpecular = wasReflectedSpecular && !reflectedDiffuse;
+        }
                 
         //update ray for next iteration
         ray.Origin = rayData.origin;

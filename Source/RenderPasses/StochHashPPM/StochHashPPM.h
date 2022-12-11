@@ -164,7 +164,8 @@ private:
     uint                        mGlobalBufferSizeUI = mNumPhotons / 2;    ///< Size of the Global Photon Buffer
     uint                        mCausticBufferSizeUI = mNumPhotons / 4;   ///< Size of the Caustic Photon Buffer
     uint                        mBucketFixedYExtend = 512;
-    
+
+    uint                        mCausticMapMultipleDiffuseHits = 0;     ///<Allows for L(S|D)*SD paths to be stored in the photon map. Treated like a bool
     float                       mIntensityScalar = 1.0f;                ///<Scales the intensity of emissive light sources
 
     // Collect only

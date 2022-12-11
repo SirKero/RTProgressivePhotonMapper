@@ -86,6 +86,7 @@ static const float kAnalyticInvPdf = ANALYTIC_INV_PDF;              //Inverse an
 static const uint kInfoTexHeight = INFO_TEXTURE_HEIGHT;
 static const uint kNumBuckets = NUM_BUCKETS;                        //Total number of buckets in 2^x
 static const bool kUsePhotonFaceNormal = PHOTON_FACE_NORMAL;
+static const bool kUseMultiDiffuseHitCausticMap = MULTI_DIFFHIT_CAUSTIC_MAP;
 
 static const float k_2Pi = 6.28318530717958647692;
 static const float k_4Pi = 12.5663706143591729538;
@@ -484,7 +485,17 @@ void rayGen()
             rayData.thp /= (1.f - prob);
         }
 
-        wasReflectedSpecular = !reflectedDiffuse;
+        //Definition for the caustic map. If MultiDiffHit is active all L(S|D)*SD paths are stored in the caustic map. Else only LS+D paths are stored
+        if(kUseMultiDiffuseHitCausticMap)
+            wasReflectedSpecular = !reflectedDiffuse;
+        else{
+            //Are we on a LS+D Path ?
+            if(i == 0)
+                wasReflectedSpecular = !reflectedDiffuse;
+
+            //Set to false on the first diffuse reflection
+            wasReflectedSpecular = wasReflectedSpecular && !reflectedDiffuse;
+        }
                 
         //update ray for next iteration
         ray.Origin = rayData.origin;

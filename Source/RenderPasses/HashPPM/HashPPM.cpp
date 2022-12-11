@@ -88,6 +88,11 @@ namespace
         {PhotonMapperHash::LightTexMode::power , "Power"},
         {PhotonMapperHash::LightTexMode::area , "Area"}
     };
+
+    const Gui::DropdownList kCausticMapModes{
+        {0, "LS+D"},
+        {1, "L(S|D)*SD"}
+    };
 }
 
 PhotonMapperHash::SharedPtr PhotonMapperHash::create(RenderContext* pRenderContext, const Dictionary& dict)
@@ -293,6 +298,7 @@ void PhotonMapperHash::generatePhotons(RenderContext* pRenderContext, const Rend
     mTracerGenerate.pProgram->addDefine("NUM_PHOTONS_PER_BUCKET", std::to_string(mNumPhotonsPerBucket));
     mTracerGenerate.pProgram->addDefine("NUM_BUCKETS", std::to_string(mNumBuckets));
     mTracerGenerate.pProgram->addDefine("PHOTON_FACE_NORMAL", mEnableFaceNormalRejection ? "1" : "0");
+    mTracerGenerate.pProgram->addDefine("MULTI_DIFFHIT_CAUSTIC_MAP", mCausticMapMultipleDiffuseHits == 0 ? "0" : "1");
     
     // Prepare program vars. This may trigger shader compilation.
     // The program should have all necessary defines set at this point.
@@ -488,6 +494,9 @@ void PhotonMapperHash::renderUI(Gui::Widgets& widget)
     mResetCS |= widget.checkbox("Use Photon Face Normal Rejection", mEnableFaceNormalRejection);
     widget.tooltip("Uses encoded Face Normal to reject photon hits on different surfaces (corners / other side of wall).");
     dirty |= mResetCS;
+    dirty |= widget.dropdown("Caustic Map Definition", kCausticMapModes, mCausticMapMultipleDiffuseHits);
+    widget.tooltip("Changes definition of the caustic photons map. L(S|D)SD path will store way more stray caustic photons, but allows caustics from indirect illuminated surfaces");
+
 
     widget.dummy("", dummySpacing);
 
