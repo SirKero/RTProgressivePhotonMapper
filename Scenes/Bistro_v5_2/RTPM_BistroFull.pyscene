@@ -7,8 +7,19 @@ camera.up = float3(0, 1, 0)
 camera.focalLength = 35
 sceneBuilder.addCamera(camera)
 # Load scene
-sceneBuilder.importScene("BistroInterior_Wine.fbx")
+
 sceneBuilder.importScene("BistroExterior.fbx")
+
+glassOut = sceneBuilder.getMaterial("MASTER_Glass_Exterior")
+glassOut.specularTransmission = 1
+glassOut.doubleSided = True
+
+sceneBuilder.importScene("BistroInterior_Wine.fbx")
+
+glassOut = sceneBuilder.getMaterial("MASTER_Glass_Exterior")
+glassOut.specularTransmission = 1
+glassOut.doubleSided = True
+
 
 # Adjust emissives to get well exposed image
 for m in sceneBuilder.materials:

@@ -178,8 +178,6 @@ AABB calcPhotonAABB(in float3 center, in float radius)
 void miss(inout RayData rayData : SV_RayPayload)
 {
     rayData.terminated = true;
-
-    //TODO: Add enviroment map color if ray misses scene 
 }
 
 [shader("closesthit")]

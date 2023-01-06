@@ -1,6 +1,6 @@
 ![](docs/images/photonMapperTeaser.png)
 
-# Hardware Ray Tracing based Progressive Photon Mapper (using Falcor 5.2)
+# Accelerated Photon Mapping for Hardware-based Ray Tracing (using Falcor 5.2)
 
 A Progressive Photon Mapper that uses the ray tracing hardware for distribution and collection of photons. Our Photon Mapper uses NVIDIA's [Falcor 5.2](https://developer.nvidia.com/falcor) framework. 
 
@@ -28,23 +28,23 @@ Alternatively, you can use [CMake](https://cmake.org). Run the `setup.bat` and t
 
 Build in Visual Studio with `Build -> Build Solution` for the correct build order. Otherwise, multiple builds may be necessary.
 
-## Loading in Falcor Scrips and Scenes
+## Loading in Falcor Scripts and Scenes
 - Start the renderer Mogwai:
-	- When using precompiled:
-		- Run `RunMogwai.bat` or `FalcorData/Mogwai.exe`. The former already loads in the RTPhotonMapper script. 
-	- For Visual Studio:
-		- Build Solution with `Build -> Build Solution` in `Release` or `Debug` configuration.
-		- Set `Mogwai` as Startup Project (should be selected by default) and start.
-- Load a Photon Map setup in Mogwai under `File -> Load Script`. You can find the Photon Map scrips in the `PhotonMapPasses` folder.
-- Load a scene in Mogwai under `File -> Load Scene`. 
+	- Build Solution with `Build -> Build Solution` in `Release` or `Debug` configuration. This step is skipped for the precompiled version.
+	- Run `RunMogwai.bat`, which loads in the RTPM render pass and the caustic glass scene. 
+		- Alternatively, start Mogwai via Visual Studio or from `FalcorData/Mogwai.exe` for the precompiled version. In this case, a photon map script and scene need to be loaded separately.
+- Load a render pass:
+	- Load a render pass in Mogwai under `File -> Load Script`. You can find the photon map scripts in the `PhotonMapPasses` folder.
+- Load a scene:
+	- Load a scene in Mogwai under `File -> Load Scene`. 
 	- Most scenes from the paper can be found in the `Scenes` folder. Load in a `.pyscene` file to get the same results as in the paper.
-		- For information about settings used, see `Scenes\SceneSettings.csv`.
-		- The Amazon Lumberyard Bistro scene needs to be downloaded separately ([here](https://developer.nvidia.com/orca/amazon-lumberyard-bistro)). Our test scenes are marked with an `RTPM` prefix. To use the Bistro_Full scene, see `Scenes\BISTRO_FULL_README.txt` for instructions.
-	- All Falcor-supported scenes with emissive lights and analytic spot/point lights are supported. 
+		- For information about settings used in the paper, see `Scenes\SceneSettings.csv`.
+		- The Amazon Lumberyard Bistro scene needs to be downloaded separately ([here](https://developer.nvidia.com/orca/amazon-lumberyard-bistro)). Our test scenes are marked with an `RTPM` prefix. For more information see `Scenes/Bistro_v5_2/BISTRO_README.txt`.
+	- All Falcor-supported scenes with emissive lights and analytic spot/point lights are supported. Environment maps are currently not supported.
 
 ## Examples
 - Example renders can be found under the `ExampleImages` folder.
-- A demo video showing the photon mapper and some functions can be found under: [https://youtu.be/k_JvwOJJYRo](https://youtu.be/k_JvwOJJYRo)
+- A demo video showing the photon mapper and some functions can be found under: [https://youtu.be/PVgip3L8q-I](https://youtu.be/PVgip3L8q-I)
 
 ## Render Passes
 | Graph | Description |

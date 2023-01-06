@@ -511,6 +511,7 @@ void RTPhotonMapper::setScene(RenderContext* pRenderContext, const Scene::Shared
     if (mEnablePhotonCulling) mRebuildCullingBuffer = true;
     // Set new scene.
     mpScene = pScene;
+    mpScene->setIsAnimated(false);
 
     if (mpScene)
     {
@@ -1301,7 +1302,7 @@ void RTPhotonMapper::createCollectionProgram()
         desc.setMaxAttributeSize(kMaxAttributeSizeBytes);
         desc.setMaxTraceRecursionDepth(kMaxRecursionDepth);
 
-        mTracerCollect.pBindingTable = RtBindingTable::create(1, 1, mpScene->getGeometryCount());   //TODO: Check if that can be removed
+        mTracerCollect.pBindingTable = RtBindingTable::create(1, 1, mpScene->getGeometryCount());
         auto& sbt = mTracerCollect.pBindingTable;
         sbt->setRayGen(desc.addRayGen("rayGen"));
         sbt->setMiss(0, desc.addMiss("miss"));
@@ -1322,7 +1323,7 @@ void RTPhotonMapper::createCollectionProgram()
         desc.setMaxAttributeSize(kMaxAttributeSizeBytes);
         desc.setMaxTraceRecursionDepth(kMaxRecursionDepth);
 
-        mTracerStochasticCollect.pBindingTable = RtBindingTable::create(1, 1, mpScene->getGeometryCount());   //TODO: Check if that can be removed
+        mTracerStochasticCollect.pBindingTable = RtBindingTable::create(1, 1, mpScene->getGeometryCount());
         auto& sbt = mTracerStochasticCollect.pBindingTable;
         sbt->setRayGen(desc.addRayGen("rayGen"));
         sbt->setMiss(0, desc.addMiss("miss"));
@@ -1547,8 +1548,7 @@ void RTPhotonMapper::photonASDebugPass(RenderContext* pRenderContext, const Rend
     bool tlasValid = var["gPhotonAS"].setSrv(mPhotonTlas.pSrv);
     FALCOR_ASSERT(tlasValid);
 
-    //pRenderContext->raytrace(mTracerCollect.pProgram.get(), mTracerCollect.pVars.get(), targetDim.x, targetDim.y, 1);
     // Trace the photons
-    mpScene->raytrace(pRenderContext, mPhotonASDebugPass.pProgram.get(), mPhotonASDebugPass.pVars, uint3(targetDim, 1));    //TODO: Check if scene defines can be set manually
+    mpScene->raytrace(pRenderContext, mPhotonASDebugPass.pProgram.get(), mPhotonASDebugPass.pVars, uint3(targetDim, 1)); 
 
 }
