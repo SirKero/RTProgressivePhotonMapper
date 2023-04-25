@@ -198,6 +198,9 @@ private:
     float                       mCausticRadius = 1.f;                 ///< Current Radius for caustic Photons
     float                       mGlobalRadius = 1.f;                  ///< Current Radius for global Photons
 
+    float                       mHashCellRad = mGlobalRadiusStart/2.f;
+    bool                        mUseFixedHashCellRad = true;
+
     float                       mSpecRoughCutoff = 0.5f;               ///< If rougness is over this value interpret the material as diffuse
 
     bool                        mResetIterations = false;               ///<Resets the iterations counter once

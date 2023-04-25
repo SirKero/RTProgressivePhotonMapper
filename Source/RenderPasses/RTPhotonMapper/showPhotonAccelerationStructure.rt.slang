@@ -1,6 +1,3 @@
-#include "Scene/SceneDefines.slangh"
-
-
 import Scene.Raytracing;
 import Scene.Intersection;
 import Scene.Camera.CameraData;

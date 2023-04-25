@@ -14,7 +14,9 @@ cbuffer PerFrame
     float gHashScaleFactor;    //Scale factor calculated from photon radius
     uint gHashSize;            //Size of the hash
     uint gYExtend;
-    float gProjTest;            //Factor for the projection test 
+    float gProjTest;            //Factor for the projection test
+    float gGlobalRadius;
+    uint3 _pad;
 }
 
 static const bool kUseProjMatrixCulling = CULLING_USE_PROJECTION;
@@ -23,7 +25,32 @@ Texture2D<PackedHitInfo> gVBuffer;
 
 RWTexture2D<uint> gHashBuffer;
 
-void getArrayOfCells(float3 position, out int3 outCells[8]){
+void getArrayOfCells(float3 position, out int3 outCells[8])
+{
+    float3 cell = (position.xyz * gHashScaleFactor);
+    float radInScale = gGlobalRadius * gHashScaleFactor;
+    float3 cellFloor = floor(cell);
+    float3 relCellPos = abs(cell - cellFloor);
+    //Get offset direction
+    int3 offsetCell;
+    offsetCell.x = relCellPos.x < 0.5 ? -1 : 1;
+    offsetCell.y = relCellPos.y < 0.5 ? -1 : 1;
+    offsetCell.z = relCellPos.z < 0.5 ? -1 : 1;
+
+    //Fill the cell array
+    
+    outCells[0] = int3(cellFloor);
+    outCells[1] = int3(floor(cell + radInScale * float3(offsetCell.x, 0             , 0             )));
+    outCells[2] = int3(floor(cell + radInScale * float3(offsetCell.x, offsetCell.y  , 0)            ));
+    outCells[3] = int3(floor(cell + radInScale * float3(offsetCell.x, offsetCell.y  , offsetCell.z  )));
+    outCells[4] = int3(floor(cell + radInScale * float3(offsetCell.x, 0             , offsetCell.z  )));
+    outCells[5] = int3(floor(cell + radInScale * float3(0           , offsetCell.y  , 0             )));
+    outCells[6] = int3(floor(cell + radInScale * float3(0           , offsetCell.y  , offsetCell.z  )));
+    outCells[7] = int3(floor(cell + radInScale * float3(0           , 0             , offsetCell.z  )));
+}
+
+//Radius independent
+void getArrayOfCellsRadIndependent(float3 position, out int3 outCells[8]){
     float3 cell = (position.xyz * gHashScaleFactor);
     float3 cellFloor = floor(cell);
     cell = abs(cell - cellFloor);

@@ -397,7 +397,7 @@ void RTPhotonMapper::renderUI(Gui::Widgets& widget)
 
     //Radius settings
     if (auto group = widget.group("Radius Options")) {
-        dirty |= widget.var("Caustic Radius Start", mCausticRadiusStart, kMinPhotonRadius, FLT_MAX, 0.001f);
+        dirty |= widget.var("Caustic Radius Start", mCausticRadiusStart, kMinPhotonRadius, mGlobalRadiusStart, 0.001f);
         widget.tooltip("The start value for the radius of caustic Photons");
         dirty |= widget.var("Global Radius Start", mGlobalRadiusStart, kMinPhotonRadius, FLT_MAX, 0.001f);
         widget.tooltip("The start value for the radius of global Photons");
@@ -419,6 +419,12 @@ void RTPhotonMapper::renderUI(Gui::Widgets& widget)
     if (auto group = widget.group("Photon Culling")) {
         dirty |= widget.checkbox("Enable Photon Culling", mEnablePhotonCulling);
         widget.tooltip("Enables photon culling. For reflected pixels outside of the camera frustrum ray tracing is used.");
+        bool cellRadSettChanged = widget.checkbox("Use fixed Culling Cell radius", mUseFixedHashCellRad);
+        widget.tooltip("Use a fixed radius for the culling cell. Only used from the point where [Global Radius < Hash Radius]");
+        if (cellRadSettChanged) mHashCellRad = mGlobalRadiusStart / 2.f; //Reset hash radius
+        if (mUseFixedHashCellRad)
+            dirty |= widget.var("Hash Cell Radius", mHashCellRad, 0.0001f, 10000.f, 0.0001f);
+        
         mRebuildCullingBuffer |= widget.slider("Culling Buffer Size", mCullingHashBufferSizeBytes, 10u, 32u);
         widget.tooltip("Size of the hash buffer. 2^x");
         bool projMatrix = widget.checkbox("Use Projection Matrix", mUseProjectionMatrixCulling);
@@ -727,11 +733,13 @@ void RTPhotonMapper::generatePhotons(RenderContext* pRenderContext, const Render
     // Set constants (uniforms).
     // 
     //PerFrame Constant Buffer
+    float hashRad = mUseFixedHashCellRad ? std::max(mGlobalRadius, mHashCellRad) : mGlobalRadius;
+
     std::string nameBuf = "PerFrame";
     var[nameBuf]["gFrameCount"] = mFrameCount;
     var[nameBuf]["gCausticRadius"] = mCausticRadius;
     var[nameBuf]["gGlobalRadius"] = mGlobalRadius;
-    var[nameBuf]["gHashScaleFactor"] = 1.0f / (mGlobalRadius * 2);  //Radius needs to be double to ensure that all photons from the camera cell are in it
+    var[nameBuf]["gHashScaleFactor"] = 1.0f / (hashRad * 2);  //Radius needs to be double to ensure that all photons from the camera cell are in it
 
     //Upload constant buffer only if options changed
     if (mResetConstantBuffers) {
@@ -1381,10 +1389,13 @@ void RTPhotonMapper::photonCullingPass(RenderContext* pRenderContext, const Rend
     //Set Scene data. Is needed for camera etc.
     mpScene->setRaytracingShaderData(pRenderContext, var, 1);
 
-    var["PerFrame"]["gHashScaleFactor"] = 1.0f / (mGlobalRadius * 2);  //Radius needs to be double to ensure that all photons from the camera cell are in it
+    float hashRad = mUseFixedHashCellRad ? std::max(mGlobalRadius, mHashCellRad) : mGlobalRadius;
+
+    var["PerFrame"]["gHashScaleFactor"] = 1.0f / (hashRad * 2);  //Radius needs to be double to ensure that all photons from the camera cell are in it
     var["PerFrame"]["gHashSize"] = 1 << mCullingHashBufferSizeBytes;
     var["PerFrame"]["gYExtend"] = mCullingYExtent;
     var["PerFrame"]["gProjTest"] = mPCullingrojectionTestOver;
+    var["PerFrame"]["gGlobalRadius"] = mGlobalRadius;
 
     var[kInputChannels[0].texname] = renderData[kInputChannels[0].name]->asTexture();    //VBuffer
     var["gHashBuffer"] = mCullingBuffer;
@@ -1499,7 +1510,7 @@ void RTPhotonMapper::photonASDebugPass(RenderContext* pRenderContext, const Rend
     // Prepare program for full collect vars. This may trigger shader compilation.
     if (!mPhotonASDebugPass.pVars) {
         FALCOR_ASSERT(mPhotonASDebugPass.pProgram);
-        mPhotonASDebugPass.pProgram->setTypeConformances(mpScene->getTypeConformances());
+        //mPhotonASDebugPass.pProgram->setTypeConformances(mpScene->getTypeConformances());
         mPhotonASDebugPass.pVars = RtProgramVars::create(mPhotonASDebugPass.pProgram, mPhotonASDebugPass.pBindingTable);
         // Bind utility classes into shared data.
         auto var = mPhotonASDebugPass.pVars->getRootVar();
