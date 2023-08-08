@@ -2,7 +2,7 @@
 
 # Accelerated Photon Mapping for Hardware-based Ray Tracing (using Falcor 5.2)
 
-A Progressive Photon Mapper that uses the ray tracing hardware for distribution and collection of photons. Our Photon Mapper uses NVIDIA's [Falcor 5.2](https://developer.nvidia.com/falcor) framework. 
+A Progressive Photon Mapper that uses the ray tracing hardware for distribution and collection of photons. Our Photon Mapper uses NVIDIA's [Falcor 5.2](https://developer.nvidia.com/falcor) framework. More details on how the Progressive Photon Mapper works can be found in our paper published in the Journal of Computer Graphic Techniques [here](https://jcgt.org/published/0012/01/01/).
 
 ## Prerequisites
 - Windows 10 version 20H2 (October 2020 Update) or newer, OS build revision .789 or newer
