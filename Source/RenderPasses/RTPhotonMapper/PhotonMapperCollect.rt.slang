@@ -123,13 +123,19 @@ void anyHit(inout RayData rayData : SV_RayPayload, SphereAttribs attribs : SV_In
         float3 faceN = dot(-WorldRayDirection(), sd.faceN) > 0 ? sd.faceN : -sd.faceN;  //Correct orientation of faceN so that it points to the camera
         //Compaire normals with a small margin of error due to data loss for the photon face normal
         if(dot(faceN, photonFaceN) < 0.9f)
-            return;
+            IgnoreHit();
     }
 
-    //Photon contribution
-    let bsdf = gScene.materials.getBSDF(sd, lod);   
-    float3 f_r = bsdf.eval(sd, -photon.dir.xyz, rayData.sg);
-    rayData.radiance += f_r * photon.flux.xyz;
+    //Photon contribution. 
+    float NdotL = dot(sd.N, -photon.dir.xyz);
+    if(NdotL > kMinCosTheta){
+        let bsdf = gScene.materials.getBSDF(sd, lod);
+        //NdotL is multiplied in bsdf.eval step, which is wrong for the radiance estimate as photons are cosine distributed 
+        float3 f_r = bsdf.eval(sd, -photon.dir.xyz, rayData.sg) / NdotL; 
+        rayData.radiance += f_r * photon.flux.xyz;
+    }
+
+    IgnoreHit(); //Ignore hit else undefined behaviour could happen
 }
 
 //Checks if the ray start point is inside the sphere.

@@ -136,10 +136,14 @@ float3 photonContribution(in ShadingData sd,in const IBSDF bsdf, uint photonInde
     //Radius test
     if (!hitSphere(photonPos, radius, sd.posW))
         return float3(0);
-                
-    float3 f_r = bsdf.eval(sd, -photon.dir.xyz,sg);
-     
-    return f_r * photon.flux.xyz;
+
+    float NdotL = dot(sd.N, -photon.dir.xyz);
+    float3 radiance = float3(0);
+    if(NdotL > kMinCosTheta){
+        float3 f_r = bsdf.eval(sd, -photon.dir.xyz,sg) / NdotL;
+        radiance = f_r * photon.flux.xyz;
+    }
+    return radiance;
 }
 
 //returns geometrically distributed random number generator

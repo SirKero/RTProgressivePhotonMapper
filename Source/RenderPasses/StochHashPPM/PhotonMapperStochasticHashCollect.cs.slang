@@ -106,13 +106,16 @@ float3 photonContribution(in ShadingData sd, uint hash , inout SampleGenerator s
     if (!hitSphere(photonPos.xyz, radius, sd.posW) || photonCount == 0)
         return float3(0);
     
-    
     let lod = ExplicitLodTextureSampler(0.f);
-    let bsdf = gScene.materials.getBSDF(sd, lod);
-            
-    float3 f_r = bsdf.eval(sd, -photonDir.xyz,sg);
-     
-    return f_r * (photonFlux.xyz * photonCount);
+    
+    float NdotL = dot(sd.N, -photonDir.xyz);
+    float3 radiance = float3(0);
+    if(NdotL > kMinCosTheta){
+        let bsdf = gScene.materials.getBSDF(sd, lod);
+        float3 f_r = bsdf.eval(sd, -photonDir.xyz,sg) / NdotL;
+        radiance = f_r * photonFlux.xyz * photonCount;
+    }
+    return radiance;
 }
 
 float3 collectPhotons(in HitInfo hitInfo, in float3 dirVec, uint2 launchIndex, bool isCaustic)

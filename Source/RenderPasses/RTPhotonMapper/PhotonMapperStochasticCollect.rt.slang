@@ -96,6 +96,8 @@ void anyHit(inout RayData rayData : SV_RayPayload, SphereAttribs attribs : SV_In
     //Insert if index is within maximum list size
     if (idx < NUM_PHOTONS)
         rayData.photonIdx[idx] = primIndex;
+
+    IgnoreHit(); //Ignore hit else undefined behaviour could happen
 }
 
 //Checks if the ray start point is inside the sphere.
@@ -168,10 +170,12 @@ float3 photonContribution(in const ShadingData sd, in IBSDF bsdf, inout RayData 
         float3 photonFlux = gPhotonFlux[instanceIndex][photonIdx2D].xyz;
         float3 photonDir = gPhotonDir[instanceIndex][photonIdx2D].xyz;
 
-        //BSDF and contribution
-        float3 f_r = bsdf.eval(sd, -photonDir, rayData.sg);
-       
-        radiance += f_r * photonFlux;
+        float NdotL = dot(sd.N, -photonDir);
+        if(NdotL > kMinCosTheta){
+            //BSDF and contribution. NdotL is multiplied in bsdf.eval step, which is wrong for the radiance estimate as photons are cosine distributed 
+            float3 f_r = bsdf.eval(sd, -photonDir, rayData.sg) / NdotL;
+            radiance += f_r * photonFlux;
+        }
     }
 
     //Weight output radiance with number of photons for this pixel.
